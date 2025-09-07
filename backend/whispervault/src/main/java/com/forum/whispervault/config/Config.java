@@ -14,9 +14,9 @@ public class Config {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173") // React dev server
+                        .allowedOrigins("https://soumya280.github.io/whisper-vault/")
                         .allowedMethods("GET", "POST", "PUT", "DELETE")
-                        .allowCredentials(true); // ⬅️ important
+                        .allowCredentials(true);
             }
         };
     }

@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/message")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://soumya280.github.io/whisper-vault/")
 public class MessageController {
 
     @Autowired
