@@ -1,0 +1,50 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+body {
+  background-color: var(--bg);
+}
+:root {
+  --ff: Arial, Helvetica, sans-serif;
+  --ff2: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  --p: 1rem/1.5em var(--ff);
+  --h1: 600 3rem/1.2em var(--ff2);
+  --h2: 600 2rem/1.2em var(--ff2);
+  --h3: 400 1.5rem/1.2em var(--ff);
+
+  /* oklch */
+  --bg-dark: oklch(0.1 0.02 340);
+  --bg: oklch(0.15 0.02 340);
+  --bg-light: oklch(0.2 0.02 340);
+  --text: oklch(0.96 0.04 340);
+  --text-muted: oklch(0.76 0.04 340);
+  --highlight: oklch(0.5 0.04 340);
+  --border: oklch(0.4 0.04 340);
+  --border-muted: oklch(0.3 0.04 340);
+  --primary: oklch(0.76 0.1 340);
+  --secondary: oklch(0.76 0.1 160);
+  --danger: oklch(0.7 0.05 30);
+  --warning: oklch(0.7 0.05 100);
+  --success: oklch(0.7 0.05 160);
+  --info: oklch(0.7 0.05 260);
+}
+body.light {
+  /* oklch */
+  --bg-dark: oklch(0.92 0.065 311);
+  --bg: oklch(0.96 0.065 311);
+  --bg-light: oklch(1 0.065 311);
+  --text: oklch(0.15 0.13 311);
+  --text-muted: oklch(0.4 0.13 311);
+  --highlight: oklch(1 0.13 311);
+  --border: oklch(0.6 0.13 311);
+  --border-muted: oklch(0.7 0.13 311);
+  --primary: oklch(0.4 0.13 311);
+  --secondary: oklch(0.4 0.13 131);
+  --danger: oklch(0.5 0.13 30);
+  --warning: oklch(0.5 0.13 100);
+  --success: oklch(0.5 0.13 160);
+  --info: oklch(0.5 0.13 260);
+}

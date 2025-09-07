@@ -11,6 +11,11 @@ import UpdateUser from "./components/UpdateUser";
 const App = () => {
   const [page, setPage] = useState("home");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  const theme = () => {
+    document.body.classList.toggle("light");
+  };
 
   const renderPage = () => {
     switch (page) {
@@ -35,11 +40,12 @@ const App = () => {
   return (
     <div id="app">
       <Navbar
+        theme={theme}
         setPage={setPage}
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
       />
-      {renderPage()}
+      <section id="hero">{renderPage()}</section>
     </div>
   );
 };

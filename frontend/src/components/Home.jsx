@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "../assets/Home.css";
 
 const Home = () => {
   const [title, setTitle] = useState("");
@@ -59,32 +60,41 @@ const Home = () => {
   return (
     <div id="home">
       <h1>Home</h1>
-      <div id="create-message">
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          ></textarea>
-          <button type="submit">Post</button>
-        </form>
-      </div>
       <div id="all-message-view">
         {messages.map((msg) => (
-          <div key={msg.messageId} className="message">
-            <h3>{msg.title}</h3>
-            <p>{msg.content}</p>
-            <small>
-              Posted by <strong>{msg.username}</strong> at{" "}
-              {new Date(msg.createdAt).toLocaleString()}
-              {msg.edited && " (edited)"}
-            </small>
+          <div key={msg.messageId} className="card">
+            <h3>{msg.username}</h3>
+            <div className="message">
+              <h2>{msg.title}</h2>
+              <hr id="t-hr" />
+              <p>{msg.content}</p>
+              <small className="created-at">
+                {new Date(msg.createdAt).toLocaleString()}
+                {msg.edited && " (edited)"}
+              </small>
+            </div>
+            <hr />
           </div>
         ))}
+      </div>
+      <div id="create-message">
+        <form onSubmit={handleSubmit}>
+          <div id="title-and-post">
+            <input
+              type="text"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Title"
+            />
+            <button type="submit">Post</button>
+          </div>
+          <textarea
+            id="content"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Content"
+          ></textarea>
+        </form>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import { useState } from "react";
 import "../assets/Navbar.css";
 import { handleLogout } from "../utils/logout";
 
-const Navbar = ({ setPage, isLoggedIn, setIsLoggedIn }) => {
+const Navbar = ({ setPage, isLoggedIn, setIsLoggedIn, theme }) => {
   const [open, setOpen] = useState(false);
 
   const handleClick = (page) => {
@@ -11,22 +11,30 @@ const Navbar = ({ setPage, isLoggedIn, setIsLoggedIn }) => {
 
   return (
     <nav>
-      <button onClick={() => setPage("home")}>Home</button>
-      <div>
-        <button onClick={() => setOpen(!open)}>☰</button>
+      <div id="nav-left-items">
+        <button onClick={() => setPage("home")}>HOME</button>
+      </div>
+      <div id="nav-mid-items"></div>
+      <div id="nav-right-items">
+        <button onClick={() => theme()}>THEME</button>
+        <div id="nav-menu-btn">
+          <button onClick={() => setOpen(!open)}>☰</button>
 
-        {open && (
-          <div id="nav-menu">
-            <a onClick={() => handleClick("profile")}>Profile</a>
-            <a onClick={() => handleClick("about")}>About</a>
-            <a onClick={() => handleClick("contact")}>Contact</a>
-            {isLoggedIn ? (
-              <a onClick={() => handleLogout(setPage, setIsLoggedIn)}>Logout</a>
-            ) : (
-              <a onClick={() => handleClick("login")}>Login</a>
-            )}
-          </div>
-        )}
+          {open && (
+            <div id="nav-menu">
+              <a onClick={() => handleClick("profile")}>Profile</a>
+              <a onClick={() => handleClick("about")}>About</a>
+              <a onClick={() => handleClick("contact")}>Contact</a>
+              {isLoggedIn ? (
+                <a onClick={() => handleLogout(setPage, setIsLoggedIn)}>
+                  Logout
+                </a>
+              ) : (
+                <a onClick={() => handleClick("login")}>Login</a>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );
