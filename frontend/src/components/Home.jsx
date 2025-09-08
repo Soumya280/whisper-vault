@@ -10,6 +10,10 @@ const Home = ({ setPage }) => {
   const [stompClient, setStompClient] = useState(null);
   const [username, setUsername] = useState("");
 
+  const wsProtocol = window.location.protocol === "https:" ? "wss" : "ws";
+  const wsHost = "localhost:8080"; // change to your backend host in production
+  const wsEndpoint = `${wsProtocol}://${wsHost}/ws`;
+
   // Fetch current user info
   const fetchUser = async () => {
     try {
