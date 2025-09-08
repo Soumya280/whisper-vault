@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +29,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 @RequestMapping("/message")
-@CrossOrigin(origins = "https://soumya280.github.io")
+@CrossOrigin(origins = { "https://soumya280.github.io", "http://localhost:5173" })
 public class MessageController {
 
     @Autowired
@@ -36,6 +37,9 @@ public class MessageController {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
     @PostMapping("/create")
     public ResponseEntity<?> createMessage(HttpServletRequest request, @RequestBody CreateMessage createMessage) {
@@ -63,6 +67,16 @@ public class MessageController {
         message.setContent(createMessage.getContent());
 
         repository.save(message);
+        AllMessages dto = new AllMessages(
+                message.getMessageId(),
+                message.getUser().getId(),
+                message.getUser().getUsername(),
+                message.getTitle(),
+                message.getContent(),
+                message.getCreatedAt().toString(),
+                message.getEdited());
+
+        messagingTemplate.convertAndSend("/topic/messages", dto);
 
         return ResponseEntity.ok(Map.of("createMessage", createMessage));
     }
