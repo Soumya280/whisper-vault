@@ -1,65 +1,110 @@
 import { useEffect, useState } from "react";
+import SockJS from "sockjs-client/dist/sockjs.js";
+import { Client } from "@stomp/stompjs";
 import "../assets/Home.css";
 
-const Home = () => {
+const Home = ({ setPage }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-
   const [messages, setMessages] = useState([]);
+  const [stompClient, setStompClient] = useState(null);
+  const [username, setUsername] = useState("");
 
-  const fetchMessages = async () => {
+  // Fetch current user info
+  const fetchUser = async () => {
     try {
-      const result = await fetch("http://localhost:8080/message/all_messages", {
+      const res = await fetch("http://localhost:8080/user/userdata", {
         method: "GET",
         credentials: "include",
       });
-
-      const all_messages = await result.json();
-
-      if (result.ok) {
-        setMessages(all_messages);
+      if (res.ok) {
+        const user = await res.json();
+        setUsername(user.username);
       }
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+      setUsername("");
+    }
+  };
+
+  // Fetch all messages
+  const fetchMessages = async () => {
+    try {
+      const res = await fetch("http://localhost:8080/message/all_messages", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (res.ok) {
+        const msgs = await res.json();
+        setMessages(msgs);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
   useEffect(() => {
+    fetchUser();
     fetchMessages();
 
-    const interval = setInterval(fetchMessages, 1000);
+    const client = new Client({
+      webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+      reconnectDelay: 5000,
+      debug: (str) => console.log(str),
+      onConnect: () => {
+        console.log("✅ Connected to WebSocket");
+        client.subscribe("/topic/messages", (msg) => {
+          if (msg.body) {
+            const newMsg = JSON.parse(msg.body);
+            setMessages((prev) =>
+              prev.some((m) => m.messageId === newMsg.messageId)
+                ? prev
+                : [newMsg, ...prev]
+            );
+          }
+        });
+      },
+    });
 
-    return () => clearInterval(interval);
+    client.activate();
+    setStompClient(client);
+
+    return () => client.deactivate();
   }, []);
+
+  useEffect(() => {
+    const container = document.getElementById("all-message-view");
+    if (container) container.scrollTop = 0;
+  }, [messages]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const result = await fetch("http://localhost:8080/message/create", {
+      const res = await fetch("http://localhost:8080/message/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ title, content }),
       });
 
-      const createMessage = await result.json();
-
-      if (result.ok) {
-        console.log(createMessage.createMessage);
-      } else if (result.status === 400) {
-        console.log(createMessage.createMessage);
-      } else if (result.status === 401) {
-        console.log(createMessage);
+      await res.json();
+      if (res.ok) {
+        setTitle("");
+        setContent("");
       }
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
     }
   };
 
   return (
     <div id="home">
-      <h1>Home</h1>
+      {username ? (
+        <h1>{`Hello, ${username}`}</h1>
+      ) : (
+        <button onClick={() => setPage("login")}>Login</button>
+      )}
+
       <div id="all-message-view">
         {messages.map((msg) => (
           <div key={msg.messageId} className="card">
@@ -77,6 +122,7 @@ const Home = () => {
           </div>
         ))}
       </div>
+
       <div id="create-message">
         <form onSubmit={handleSubmit}>
           <div id="title-and-post">
@@ -99,4 +145,5 @@ const Home = () => {
     </div>
   );
 };
+
 export default Home;

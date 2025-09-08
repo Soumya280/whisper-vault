@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "./components/Navbar";
 import "./assets/App.css";
 import Home from "./components/Home";
@@ -11,7 +11,27 @@ import UpdateUser from "./components/UpdateUser";
 const App = () => {
   const [page, setPage] = useState("home");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    // Check if user is logged in on page load
+    const checkLogin = async () => {
+      try {
+        const res = await fetch("http://localhost:8080/user/userdata", {
+          method: "GET",
+          credentials: "include",
+        });
+        if (res.ok) {
+          setIsLoggedIn(true);
+        } else {
+          setIsLoggedIn(false);
+        }
+      } catch (err) {
+        console.error(err);
+        setIsLoggedIn(false);
+      }
+    };
+    checkLogin();
+  }, []);
 
   const theme = () => {
     document.body.classList.toggle("light");
@@ -19,8 +39,6 @@ const App = () => {
 
   const renderPage = () => {
     switch (page) {
-      case "home":
-        return <Home />;
       case "profile":
         return <Profile setPage={setPage} setIsLoggedIn={setIsLoggedIn} />;
       case "update_user":
@@ -31,9 +49,9 @@ const App = () => {
         return <Contact />;
       case "login":
         return <Forms setPage={setPage} setIsLoggedIn={setIsLoggedIn} />;
-
+      case "home":
       default:
-        return <Home />;
+        return <Home setPage={setPage} />;
     }
   };
 
