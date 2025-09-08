@@ -10,10 +10,7 @@ const Home = ({ setPage }) => {
   const [stompClient, setStompClient] = useState(null);
   const [username, setUsername] = useState("");
 
-  const wsEndpoint =
-    window.location.protocol === "https:"
-      ? "wss://localhost:8080/ws"
-      : "ws://localhost:8080/ws";
+  const wsEndpoint = "/ws";
 
   // Fetch current user info
   const fetchUser = async () => {
