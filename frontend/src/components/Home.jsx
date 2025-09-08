@@ -10,11 +10,10 @@ const Home = ({ setPage }) => {
   const [stompClient, setStompClient] = useState(null);
   const [username, setUsername] = useState("");
 
-  const wsProtocol = window.location.protocol; // "http:" or "https:"
-  const wsHost = "localhost:8080"; // your backend host
-  const wsEndpoint = `${wsProtocol}//${wsHost}/ws`;
-
-  new SockJS(wsEndpoint); // ✅ Works
+  const wsEndpoint =
+    window.location.protocol === "https:"
+      ? "wss://localhost:8080/ws"
+      : "ws://localhost:8080/ws";
 
   // Fetch current user info
   const fetchUser = async () => {
